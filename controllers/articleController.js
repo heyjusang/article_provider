@@ -36,13 +36,13 @@ function getNextArticle(session, res) {
 }
 
 function successOnGetNextAd(ads, session, res) {
-    sessionController.setLatestAdTime(session, Date.now());
-    sessionController.setReadCount(session, 0);
-
     if (!ads || ads.length < 1) {
-        getNextArticle(session, res);
+        sessionController.setLatestAdId(session, undefined);
+        getNextAd(session, res);
     }
     else {
+        sessionController.setLatestAdTime(session, Date.now());
+        sessionController.setReadCount(session, 0);
         sessionController.setLatestAdId(session, ads[0]._id);
         successOnGetNext(ads[0], res);
     }
@@ -50,7 +50,8 @@ function successOnGetNextAd(ads, session, res) {
 
 function successOnGetNextArticle(articles, session ,res) {
     if (!articles || articles.length < 1) {
-        res.status(404).json({err: {message: 'Article not Found'}});
+        sessionController.setLatestArticleId(session, undefined);
+        getNextArticle(session, res);
     }
     else {
         sessionController.setLatestArticleId(session, articles[0]._id);
