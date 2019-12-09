@@ -6,7 +6,7 @@ const logger = require('morgan');
 
 const mongoose = require('mongoose');
 const sessionParser = require('express-session');
-const fileStore = require('session-file-store')(sessionParser);
+const mongoStore = require('connect-mongo')(sessionParser);
 const dotenv = require('dotenv');
 const articleRouter = require('./routes/article');
 
@@ -18,7 +18,10 @@ app.use(sessionParser({
   secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: true,
-  store:new fileStore()
+  store:new mongoStore({
+    url: process.env.MONGO_URI,
+    collection: "sessions"
+  })
 }));
 
 // view engine setup
